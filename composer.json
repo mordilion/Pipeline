@@ -1,0 +1,26 @@
+{
+    "name": "mordilion/pipeline",
+    "description": "A PHP-Library to have an easy way to write a configurable transfer/export with different kinds of interfaces.",
+    "keywords": ["pipeline", "export", "exporter", "exporting", "configuration", "configurable", "splfileobject"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Henning Huncke",
+            "email": "mordilion@gmx.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mordilion\\Pipeline\\": "src/Mordilion/Pipeline"
+        }
+    },
+    "require": {
+        "php": ">=7.2.0",
+        "ext-pdo": "*",
+        "mordilion/configurable": "^0.7.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    }
+}
