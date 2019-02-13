@@ -2,27 +2,27 @@
 
 use PHPUnit\Framework\TestCase;
 
-use Mordilion\Pipeline\Writer\ExecWriter;
+use Mordilion\Pipeline\Writer\ArrayWriter;
 
 class ArrayWriterTest extends TestCase
 {
     public function testMethodCloseReturnsTrue()
     {
-        $writer = new ExecWriter();
+        $writer = new ArrayWriter();
 
         $this->assertTrue($writer->close());
     }
 
     public function testMethodOpenReturnsTrue()
     {
-        $writer = new ExecWriter();
+        $writer = new ArrayWriter();
 
         $this->assertTrue($writer->open());
     }
 
     public function testMethodOpenClearsTheInternalDataArray()
     {
-        $writer = new ExecWriter();
+        $writer = new ArrayWriter();
         $writer->open();
 
         $data = ['col1' => 'val1', 'col2' => 'val2'];
@@ -36,7 +36,7 @@ class ArrayWriterTest extends TestCase
 
     public function testMethodGetDataReturnsTheCurrentDataArray()
     {
-        $writer = new ExecWriter();
+        $writer = new ArrayWriter();
         $writer->open();
 
         $data = ['col1' => 'val1', 'col2' => 'val2'];
@@ -48,7 +48,7 @@ class ArrayWriterTest extends TestCase
 
     public function testMethodWriteStoresTheProvidedDataInTheInternalDataArray()
     {
-        $writer = new ExecWriter();
+        $writer = new ArrayWriter();
         $writer->open();
 
         $data = ['col1' => 'val1', 'col2' => 'val2'];

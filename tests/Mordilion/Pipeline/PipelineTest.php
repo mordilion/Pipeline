@@ -142,7 +142,7 @@ class PipelineTest extends TestCase
         ]);
     }
 
-    public function testAnalyzeConfigurationThrowsRuntimeExceptionIfAWrongFormatIsProvided1()
+    public function testAnalyzeConfigurationThrowsRuntimeExceptionIfAWrongFormatIsProvided()
     {
         $this->expectException(\RuntimeException::class);
 
@@ -150,17 +150,6 @@ class PipelineTest extends TestCase
         $pipeline->setWriter([
             'class-wrong' => \InvalidArgumentException::class,
             'configuration' => []
-        ]);
-    }
-
-    public function testAnalyzeConfigurationThrowsRuntimeExceptionIfAWrongFormatIsProvided2()
-    {
-        $this->expectException(\RuntimeException::class);
-
-        $pipeline = new Pipeline();
-        $pipeline->setWriter([
-            'class' => NullWriter::class,
-            'configuration-wrong' => []
         ]);
     }
 }
