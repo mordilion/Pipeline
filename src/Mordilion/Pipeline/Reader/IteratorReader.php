@@ -11,19 +11,22 @@
 
 namespace Mordilion\Pipeline\Reader;
 
+use Iterator;
+use RuntimeException;
+
 /**
- * Pipeline ArrayReader-Class.
+ * Pipeline IteratorReader-Class.
  *
  * @author Henning Huncke <mordilion@gmx.de>
  */
-class ArrayReader extends ReaderAbstract
+class IteratorReader extends ReaderAbstract
 {
     /**
-     * Array with data.
+     * Iterator.
      *
-     * @var array
+     * @var Iterator
      */
-    private $data = [];
+    private $iterator;
 
 
     /**
@@ -39,17 +42,17 @@ class ArrayReader extends ReaderAbstract
      */
     public function current()
     {
-        return current($this->data);
+        return $this->iterator->current();
     }
 
     /**
-     * Returns the current data array.
+     * Returns the current Iterator.
      *
-     * @return array
+     * @return Iterator
      */
-    public function getData(): array
+    public function getIterator(): ?Iterator
     {
-        return $this->data;
+        return $this->iterator;
     }
 
     /**
@@ -57,7 +60,7 @@ class ArrayReader extends ReaderAbstract
      */
     public function key()
     {
-        return key($this->data);
+        return $this->iterator->key();
     }
 
     /**
@@ -65,7 +68,7 @@ class ArrayReader extends ReaderAbstract
      */
     public function next()
     {
-        next($this->data);
+        $this->iterator->next();
     }
 
     /**
@@ -73,6 +76,10 @@ class ArrayReader extends ReaderAbstract
      */
     public function open(): bool
     {
+        if (!$this->iterator instanceof Iterator) {
+            throw new RuntimeException('You must define a Iterator object first.');
+        }
+
         $this->rewind();
 
         return true;
@@ -83,19 +90,19 @@ class ArrayReader extends ReaderAbstract
      */
     public function rewind()
     {
-        reset($this->data);
+        $this->iterator->rewind();
     }
-    
+
     /**
-     * Sets the data to work with.
+     * Sets the iterator to work with.
      *
-     * @param array $data
+     * @param Iterator $iterator
      *
-     * @return ArrayReader
+     * @return IteratorReader
      */
-    public function setData(array $data): ArrayReader
+    public function setIterator(Iterator $iterator): IteratorReader
     {
-        $this->data = $data;
+        $this->iterator = $iterator;
 
         return $this;
     }
@@ -105,6 +112,6 @@ class ArrayReader extends ReaderAbstract
      */
     public function valid(): bool
     {
-        return key($this->data) !== null;
+        return $this->iterator->valid();
     }
 }
