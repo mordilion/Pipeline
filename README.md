@@ -1,3 +1,6 @@
+[![Travis](https://img.shields.io/travis/mordilion/Pipeline.svg?branch=master)](https://travis-ci.org/mordilion/Pipeline)
+[![Packagist](https://img.shields.io/packagist/dt/mordilion/pipeline.svg)](https://packagist.org/packages/mordilion/pipeline)
+
 # Pipeline
 
 ## Description
@@ -30,7 +33,7 @@ $writer->setFile(new \SplFileObject($filename, 'w'))
 $pipeline = new Pipeline();
 $pipeline->setReader($reader)
     ->setWriter($writer)
-    ->transfer());
+    ->transfer();
 ```
 
 ## Database => CSV Example 
