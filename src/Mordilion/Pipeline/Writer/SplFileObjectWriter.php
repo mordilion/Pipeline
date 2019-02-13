@@ -31,10 +31,10 @@ class SplFileObjectWriter extends WriterAbstract
      *
      * @var array
      */
-    public static $availableModes = array(
+    public static $availableModes = [
         self::MODE_NORMAL,
         self::MODE_CSV
-    );
+    ];
 
     /**
      * SplFileObject object.

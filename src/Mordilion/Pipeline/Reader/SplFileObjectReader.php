@@ -70,7 +70,6 @@ class SplFileObjectReader extends ReaderAbstract
     public function next()
     {
         $this->file->next();
-        $this->file->current(); // important, else the pointer does not move forward
     }
 
     /**

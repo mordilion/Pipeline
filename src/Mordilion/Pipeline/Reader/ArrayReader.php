@@ -23,7 +23,7 @@ class ArrayReader extends ReaderAbstract
      *
      * @var array
      */
-    private $data = array();
+    private $data = [];
 
 
     /**

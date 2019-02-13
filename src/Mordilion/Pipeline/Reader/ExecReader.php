@@ -30,7 +30,7 @@ class ExecReader extends ReaderAbstract
      *
      * @var array
      */
-    private $output = array();
+    private $output = [];
 
 
     /**

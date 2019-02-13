@@ -23,7 +23,7 @@ class ArrayWriter extends WriterAbstract
      *
      * @var array
      */
-    private $data = array();
+    private $data = [];
 
 
     /**
@@ -51,7 +51,7 @@ class ArrayWriter extends WriterAbstract
     {
         unset($this->data);
 
-        $this->data = array();
+        $this->data = [];
 
         return true;
     }

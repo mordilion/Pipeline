@@ -96,11 +96,13 @@ class SplFileObjectReaderTest extends TestCase
         $this->assertTrue($reader->valid());
 
         $reader->next();
+        $reader->current();
 
         $this->assertTrue($reader->valid());
 
         for ($i = 1; $i <= 4; $i++) {
             $reader->next();
+            $reader->current();
         }
 
         $this->assertFalse($reader->valid());

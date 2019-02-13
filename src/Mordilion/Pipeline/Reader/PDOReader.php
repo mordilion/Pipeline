@@ -27,7 +27,7 @@ class PDOReader extends ArrayReader
      *
      * @var array
      */
-    private $parameters = array();
+    private $parameters = [];
 
     /**
      * PDO object.

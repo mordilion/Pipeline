@@ -82,7 +82,7 @@ class Pipeline
                 $row = call_user_func($callback, $row, $this->reader, $this->writer);
             }
 
-            $this->writer->write($row);
+            $this->writer->write((array)$row);
         }
 
         if (!$this->reader->close()) {

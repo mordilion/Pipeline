@@ -43,7 +43,7 @@ $pdo = new \PDO('sqlite:' . __DIR__ . '/sqlite.db');
 $sql = 'SELECT * FROM demo';
 
 $reader = new PDOReader();
-$reader->setPdo($pdo, '', '', array())
+$reader->setPdo($pdo, '', '', [])
     ->setSql($sql);
 $writer = new NullWriter();
 
@@ -75,6 +75,8 @@ $pipeline->setReader($reader)
 $pipeline->transfer();
 /* END - SQLite-Database as Datasource with configuration */
 
+
+
 /* BEGIN - pure configuration */
 $json = '
 {
@@ -96,7 +98,7 @@ $json = '
 $pipeline = new Pipeline();
 $pipeline->setConfiguration(ConfigurationFactory::create($json, 'json'));
 $pipeline->transfer(function ($row) {
-    return array_merge($row, array('created_at' => date('Y-m-d H:i:s')));
+    return array_merge($row, ['created_at' => date('Y-m-d H:i:s')]);
 });
 
 var_dump($pipeline->getWriter()->getData());

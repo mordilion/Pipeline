@@ -36,9 +36,9 @@ $pipeline->setReader($reader)
     ->transfer();
 ```
 
-## Database => CSV Example 
+## Database to CSV 
 
-An example of how to export data from a SQLite database into a CSV file with additional columns.
+An example of how to export data from a database into a CSV file with additional columns.
 
 ```php
 <?php
@@ -59,7 +59,7 @@ $writer->setFile(new \SplFileObject($filename, 'w'))
 $pipeline = new Pipeline();
 $pipeline->setReader($reader)
     ->setWriter($writer)
-    ->transfer(function (array $row) {
+    ->transfer(function (array $row, ReaderAbstract $reader, WriterAbstract $writer) {
         $timestamps = [
             'created_at' => isset($row['created_at']) ? $row['created_at'] : date('Y-m-d H:i:s'),
             'updated_at' => isset($row['updated_at']) ? $row['updated_at'] : date('Y-m-d H:i:s'),
@@ -68,4 +68,29 @@ $pipeline->setReader($reader)
 
         return array_merge($row, $timestamps);
     });
+```
+
+## Directory listing to CSV 
+
+An example of how to export data from a database into a CSV file with additional columns.
+
+```php
+<?php
+
+use Mordilion\Pipeline\Pipeline;
+use Mordilion\Pipeline\Reader\ExecReader;
+use Mordilion\Pipeline\Writer\SplFileObjectWriter;
+
+$reader = new ExecReader();
+$reader->setCommand('ls /');
+
+$filename = __DIR__ . '/directory-listing.csv';
+$writer = new SplFileObjectWriter();
+$writer->setFile(new \SplFileObject($filename, 'w'))
+    ->setMode(SplFileObjectWriter::MODE_CSV);
+
+$pipeline = new Pipeline();
+$pipeline->setReader($reader)
+    ->setWriter($writer)
+    ->transfer();
 ```
