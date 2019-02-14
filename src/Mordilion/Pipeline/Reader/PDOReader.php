@@ -12,6 +12,8 @@
 namespace Mordilion\Pipeline\Reader;
 
 use InvalidArgumentException;
+use Iterator;
+use IteratorIterator;
 use PDO;
 use RuntimeException;
 
@@ -20,7 +22,7 @@ use RuntimeException;
  *
  * @author Henning Huncke <mordilion@gmx.de>
  */
-class PDOReader extends ArrayReader
+class PDOReader extends IteratorReader
 {
     /**
      * Parameters for the executing of the prepared statement.
@@ -101,13 +103,11 @@ class PDOReader extends ArrayReader
         }
 
         $this->statement->execute($this->parameters);
-        $this->setData((array)$this->statement->fetchAll(PDO::FETCH_ASSOC)); // could take a while
+        $this->setIterator(new IteratorIterator($this->statement));
         
-        $this->rewind();
-
-        return true;
+        return parent::open();
     }
-    
+
     /**
      * Sets the parameters for the prepared statement.
      *
