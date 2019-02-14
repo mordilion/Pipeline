@@ -21,7 +21,7 @@ interface ReaderInterface extends \Iterator
     /**
      * Close the datasource.
      *
-     * @return boolean
+     * @return bool
      */
     public function close(): bool;
 
@@ -29,7 +29,7 @@ interface ReaderInterface extends \Iterator
      * Open the datasource.
      *
      *
-     * @return boolean
+     * @return bool
      */
     public function open(): bool;
 }

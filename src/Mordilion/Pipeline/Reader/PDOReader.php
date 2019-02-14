@@ -12,8 +12,7 @@
 namespace Mordilion\Pipeline\Reader;
 
 use InvalidArgumentException;
-use Iterator;
-use IteratorIterator;
+use ArrayIterator;
 use PDO;
 use RuntimeException;
 
@@ -96,6 +95,7 @@ class PDOReader extends IteratorReader
             throw new RuntimeException('You must define a SQL query first.');
         }
 
+        $this->pdo->setAttribute(PDO::ATTR_CURSOR, PDO::CURSOR_SCROLL);
         $this->statement = $this->pdo->prepare($this->sql);
 
         if ($this->statement === false) {
@@ -103,8 +103,8 @@ class PDOReader extends IteratorReader
         }
 
         $this->statement->execute($this->parameters);
-        $this->setIterator(new IteratorIterator($this->statement));
-        
+        $this->setIterator(new ArrayIterator($this->statement->fetchAll(PDO::FETCH_ASSOC)));
+
         return parent::open();
     }
 
