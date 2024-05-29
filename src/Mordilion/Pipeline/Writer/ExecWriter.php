@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the Pipeline package.
  *
@@ -59,10 +61,11 @@ class ExecWriter extends WriterAbstract
      */
     public function write(array $data): void
     {
-        exec((string)reset($data), $output);
+        $output = [];
+        exec((string) reset($data), $output);
 
-        if (is_array($output) && is_callable($this->callback)) {
-            call_user_func_array($this->callback, array($output));
+        if (is_callable($this->callback)) {
+            call_user_func_array($this->callback, [$output]);
         }
     }
 }

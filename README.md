@@ -1,4 +1,3 @@
-[![Travis](https://img.shields.io/travis/mordilion/Pipeline.svg?branch=master)](https://travis-ci.org/mordilion/Pipeline)
 [![Packagist](https://img.shields.io/packagist/dt/mordilion/pipeline.svg)](https://packagist.org/packages/mordilion/pipeline)
 
 # Pipeline

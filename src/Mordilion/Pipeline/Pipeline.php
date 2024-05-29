@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the Pipeline package.
  *
@@ -13,8 +15,10 @@ namespace Mordilion\Pipeline;
 
 use InvalidArgumentException;
 use Mordilion\Configurable\Configurable;
+use Mordilion\Pipeline\Reader\ReaderInterface;
 use Mordilion\Pipeline\Writer\WriterAbstract;
 use Mordilion\Pipeline\Reader\ReaderAbstract;
+use Mordilion\Pipeline\Writer\WriterInterface;
 use RuntimeException;
 
 /**
@@ -50,32 +54,15 @@ class Pipeline
      *
      * @param callable|null $callback
      *
-     * @throws InvalidArgumentException if no reader was defined
-     * @throws InvalidArgumentException if no writer was defined
-     * @throws RuntimeException if the writer cannot opened
-     * @throws RuntimeException if the reader cannot opened
-     * @throws RuntimeException if the reader cannot closed
-     * @throws RuntimeException if the writer cannot closed
+     * @throws InvalidArgumentException if no reader or writer was defined
+     * @throws RuntimeException if the reader or writer cannot be opened or closed
      *
      * @return void
      */
     public function transfer(?callable $callback = null): void
     {
-        if (!$this->reader instanceof ReaderAbstract) {
-            throw new InvalidArgumentException('You have to define a valid reader to run the transfer process.');
-        }
-
-        if (!$this->writer instanceof WriterAbstract) {
-            throw new InvalidArgumentException('You have to define a valid writer to run the transfer process.');
-        }
-
-        if (!$this->writer->open()) {
-            throw new RuntimeException('Could not open writer.');
-        }
-
-        if (!$this->reader->open()) {
-            throw new RuntimeException('Could not open reader.');
-        }
+        $this->validateMembers();
+        $this->openResources();
 
         foreach ($this->reader as $row) {
             if (is_callable($callback)) {
@@ -85,13 +72,7 @@ class Pipeline
             $this->writer->write((array)$row);
         }
 
-        if (!$this->reader->close()) {
-            throw new RuntimeException('Could not close reader.');
-        }
-
-        if (!$this->writer->close()) {
-            throw new RuntimeException('Could not close writer.');
-        }
+        $this->closeResources();
     }
 
     /**
@@ -124,11 +105,11 @@ class Pipeline
     public function setReader($reader): Pipeline
     {
         if (is_array($reader)) {
-            $reader = $this->analyzeConfiguration($reader);
+            $reader = $this->analyzeReaderConfiguration($reader);
         }
 
-        if (!$reader instanceof ReaderAbstract) {
-            throw new InvalidArgumentException('The provided reader must be an instance of ReaderAbstract or a configuration array.');
+        if (!$reader instanceof ReaderInterface) {
+            throw new InvalidArgumentException('The provided reader must be an instance of ReaderInterface or a configuration array.');
         }
 
         $this->reader = $reader;
@@ -146,11 +127,11 @@ class Pipeline
     public function setWriter($writer): Pipeline
     {
         if (is_array($writer)) {
-            $writer = $this->analyzeConfiguration($writer);
+            $writer = $this->analyzeWriterConfiguration($writer);
         }
 
-        if (!$writer instanceof WriterAbstract) {
-            throw new InvalidArgumentException('The provided writer must be an instance of WriterAbstract or a configuration array.');
+        if (!$writer instanceof WriterInterface) {
+            throw new InvalidArgumentException('The provided writer must be an instance of WriterInterface or a configuration array.');
         }
 
         $this->writer = $writer;
@@ -159,13 +140,13 @@ class Pipeline
     }
 
     /**
-     * Returns a reader or writer object based on the provided configuration array.
+     * Returns a reader object based on the provided configuration array.
      *
      * @param array $configuration
      *
-     * @return ReaderAbstract|WriterAbstract
+     * @return ReaderInterface
      */
-    private function analyzeConfiguration(array $configuration): Object
+    private function analyzeReaderConfiguration(array $configuration): ReaderInterface
     {
         if (!isset($configuration['class'])) {
             throw new RuntimeException('Wrong configuration format.');
@@ -174,14 +155,74 @@ class Pipeline
         $class = $configuration['class'];
         $object = new $class();
 
-        if (!$object instanceof ReaderAbstract && !$object instanceof WriterAbstract) {
+        if (!$object instanceof ReaderInterface) {
             throw new RuntimeException('It is not an allowed class.');
         }
 
-        if (!empty($configuration['configuration'] ?? null)) {
+        if ($object instanceof ReaderAbstract && !empty($configuration['configuration'] ?? null)) {
             $object->setConfiguration($configuration['configuration']);
         }
 
         return $object;
+    }
+
+    /**
+     * Returns a reader object based on the provided configuration array.
+     *
+     * @param array $configuration
+     *
+     * @return WriterInterface
+     */
+    private function analyzeWriterConfiguration(array $configuration): WriterInterface
+    {
+        if (!isset($configuration['class'])) {
+            throw new RuntimeException('Wrong configuration format.');
+        }
+
+        $class = $configuration['class'];
+        $object = new $class();
+
+        if (!$object instanceof WriterInterface) {
+            throw new RuntimeException('It is not an allowed class.');
+        }
+
+        if ($object instanceof WriterAbstract && !empty($configuration['configuration'] ?? null)) {
+            $object->setConfiguration($configuration['configuration']);
+        }
+
+        return $object;
+    }
+
+    private function validateMembers(): void
+    {
+        if (!$this->reader instanceof ReaderAbstract) {
+            throw new InvalidArgumentException('You have to define a valid reader to run the transfer process.');
+        }
+
+        if (!$this->writer instanceof WriterAbstract) {
+            throw new InvalidArgumentException('You have to define a valid writer to run the transfer process.');
+        }
+    }
+
+    private function openResources(): void
+    {
+        if (!$this->writer->open()) {
+            throw new RuntimeException('Could not open writer.');
+        }
+
+        if (!$this->reader->open()) {
+            throw new RuntimeException('Could not open reader.');
+        }
+    }
+
+    private function closeResources(): void
+    {
+        if (!$this->reader->close()) {
+            throw new RuntimeException('Could not close reader.');
+        }
+
+        if (!$this->writer->close()) {
+            throw new RuntimeException('Could not close writer.');
+        }
     }
 }

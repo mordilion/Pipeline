@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of the Pipeline package.
  *
@@ -15,6 +17,7 @@ use InvalidArgumentException;
 use ArrayIterator;
 use PDO;
 use RuntimeException;
+use Throwable;
 
 /**
  * Pipeline PDOReader-Class.
@@ -96,7 +99,12 @@ class PDOReader extends IteratorReader
         }
 
         $this->pdo->setAttribute(PDO::ATTR_CURSOR, PDO::CURSOR_SCROLL);
-        $this->statement = $this->pdo->prepare($this->sql);
+
+        try {
+            $this->statement = $this->pdo->prepare($this->sql);
+        } catch (Throwable $throwable) {
+            return false;
+        }
 
         if ($this->statement === false) {
             return false;
